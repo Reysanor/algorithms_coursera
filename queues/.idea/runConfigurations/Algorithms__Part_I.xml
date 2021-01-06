@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Algorithms, Part I" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="Stack" />
+    <module name="Algorithms, Part I" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
