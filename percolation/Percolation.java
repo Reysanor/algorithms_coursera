@@ -115,27 +115,32 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
+
+        WeightedQuickUnionPathCompressionUF weightedQuickUnionPathCompressionUF
+                = new WeightedQuickUnionPathCompressionUF(10);
+        weightedQuickUnionPathCompressionUF.union(7, 0);
+        weightedQuickUnionPathCompressionUF.union(7, 8);
+        weightedQuickUnionPathCompressionUF.union(7, 3);
+        weightedQuickUnionPathCompressionUF.union(7, 4);
+        weightedQuickUnionPathCompressionUF.union(7, 5);
+
+        weightedQuickUnionPathCompressionUF.union(1, 2);
+        weightedQuickUnionPathCompressionUF.union(1, 6);
+        weightedQuickUnionPathCompressionUF.union(1, 9);
+
+        weightedQuickUnionPathCompressionUF.print();
+        //System.out.println(quickUnionUF.find(6));
         /*
-        QuickUnionUF quickUnionUF = new QuickUnionUF(10);
-        quickUnionUF.union(7, 0);
-        quickUnionUF.union(7, 8);
-        quickUnionUF.union(7, 3);
-        quickUnionUF.union(7, 4);
-        quickUnionUF.union(7, 5);
-
-        quickUnionUF.union(1, 2);
-        quickUnionUF.union(1, 6);
-        quickUnionUF.union(1, 9);
-
-        quickUnionUF.print();
-        System.out.println(quickUnionUF.find(6));
-        */
 
         Percolation percolation = new Percolation(10);
 
         percolation.open(0, 0);
         percolation.isOpen(11, 5);
+        */
+
         /*
+
+
         percolation.open(1, 0);
 
         percolation.open(2, 2);
