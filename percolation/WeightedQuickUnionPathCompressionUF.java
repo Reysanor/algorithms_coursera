@@ -10,20 +10,27 @@ public class WeightedQuickUnionPathCompressionUF {
     private int[] size; // liczba elementów mających korzeń o wartości size[i]
     private int count; // liczba elementów w sumie
 
+    //do Q1
+    private int numberOfConnectedElements = 1; //liczba połączonych elementów
+    //do Q2
+    private int[] largest; //największy element w danym drzewie
+
     //inicjalizacja
     public WeightedQuickUnionPathCompressionUF(int n) {
         count = n;
         parent = new int[n];
         size = new int[n];
+        largest = new int[n];
         for (int i = 0; i < n; i++) {
             //domyślnie element jest korzeniem siebie
             parent[i] = i;
             //domyślnie rozmiar każdego drzewa to 1
             size[i] = 1;
+            //Q2, domyślna najwyższa wartość
+            largest[i] = i;
         }
 
     }
-
 
     //łączenie elementów a tym samym i ich drzew
     public void union(int p, int q) {
@@ -34,14 +41,29 @@ public class WeightedQuickUnionPathCompressionUF {
 
         //takie same elementy - nic nie robie
         if (i == j) return;
+
+        //Q1 - w przypadku łączenia drzew zwiększam liczbe połączonych
+        numberOfConnectedElements++;
+
+        //Q2 - aktualne wartości największych
+        int largestI = largest[i];
+        int largestJ = largest[j];
         //różne wysokości - podłączam mniejsze do większeo i zwiększam rozmiar większego
         if (size[i] < size[j]) {
             parent[i] = j;
             size[j] += size[i];
+            //Q2 - porównuje najwyższe
+            if (largestI > largestJ) {
+                largest[j] = largest[i];
+            }
         }
         else {
             parent[j] = i;
             size[i] += size[j];
+            //Q2 - porównuje najwyższe
+            if (largestJ > largestI) {
+                largest[i] = largest[j];
+            }
         }
 
     }
@@ -84,10 +106,58 @@ public class WeightedQuickUnionPathCompressionUF {
         }
     }
 
-
     public int delete(int size) {
         //constructor
         return 0;
+    }
+
+    //do Q1
+    public boolean allConnected() {
+        return numberOfConnectedElements == count;
+    }
+
+    //do Q2
+    public int find(int n){
+        //największa wartość na korzenia wybranego elementu
+        return largest[root(n)];
+    }
+    public static void main(String[] args) {
+
+
+        /////////////////////////////////////////////
+        /*
+        //Q1, From file
+        In in = new In(args[0]);      // input file
+        WeightedQuickUnionPathCompressionUF uf = new WeightedQuickUnionPathCompressionUF(10);
+        while (!in.isEmpty()) {
+            int i = in.readInt();
+            int j = in.readInt();
+            String date = in.readString();
+            String time = in.readString();
+            uf.union(i, j);
+            uf.print();
+            if (uf.allConnected()) {
+                System.out.println(date + " " + time);
+                break;
+            }
+        }
+*/
+        /*
+        //Standard input
+        int N = StdIn.readInt();
+        UF uf = new UF(N);
+        while (!StdIn.isEmpty())
+        {
+            int p = StdIn.readInt();
+            int q = StdIn.readInt();
+            if (!uf.connected(p, q))
+            {
+                uf.union(p, q);
+                StdOut.println(p + " " + q);
+            }
+        }
+
+         */
     }
 
 }
