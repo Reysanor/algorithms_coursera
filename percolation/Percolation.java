@@ -4,6 +4,21 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
  *  Name:              Alan Turing
  *  Coursera User ID:  123456
  *  Last modified:     1/1/2019
+ *
+ * Percolation. Given a composite systems comprised of randomly distributed insulating and metallic materials:
+ * what fraction of the materials need to be metallic so that the composite system is an electrical conductor?
+ * Given a porous landscape with water on the surface (or oil below), under what conditions will the water be able to drain
+ * through to the bottom (or the oil to gush through to the surface)? Scientists have defined an abstract process known
+ * as percolation to model such situations.
+
+The model. We model a percolation system using an n-by-n grid of sites. Each site is either open or blocked.
+* A full site is an open site that can be connected to an open site in the top row via a chain of neighboring
+* (left, right, up, down) open sites. We say the system percolates if there is a full site in the bottom row.
+* In other words, a system percolates if we fill all open sites connected to the top row and that process fills some open site
+* on the bottom row. (For the insulating/metallic materials example, the open sites correspond to metallic materials,
+* so that a system that percolates has a metallic path from top to bottom, with full sites conducting.
+* For the porous substance example, the open sites correspond to empty space through which water might flow,
+* so that a system that percolates lets water fill open sites, flowing from top to bottom.)
  **************************************************************************** */
 public class Percolation {
 
@@ -14,6 +29,7 @@ public class Percolation {
     private final int size;
 
     // creates n-by-n grid, with all sites initially blocked
+    // tworze siatke z zablokowanymi polami
     public Percolation(int n) {
         size = n;
         grid = new boolean[n][n];
@@ -32,6 +48,7 @@ public class Percolation {
     }
 
     // opens the site (row, col) if it is not open already
+    //otwieram pole
     public void open(int row, int col) {
         row--;
         col--;
@@ -41,18 +58,22 @@ public class Percolation {
             grid[row][col] = true;
             counterOfOpen++;
         }
-
+        //wirtualna góra - są do niej podłączone wszystkie elementy z pierwszego wiersza.
         if (row == 0) {
             weightedQuickUnionUF.union(0, position(row, col));
 
         }
+        //wirtualny dół - są do niego podłączone wszystkie elementy z ostatniego wiersza.
         if (row == size - 1) {
             weightedQuickUnionUF.union(size * size + 1, position(row, col));
         }
+        //aby sprawdzić czy następuje przesiąkanie (percolation) wystarczy sprawdzić czy te dwa pola mają wspólny korzeń.
+
         connectToNeighbors(row, col);
     }
 
     // is the site (row, col) open?
+    //czy pole jest otwarte
     public boolean isOpen(int row, int col) {
         row--;
         col--;
@@ -62,6 +83,7 @@ public class Percolation {
     }
 
     // is the site (row, col) full?
+    // pole ma łączność z górą
     public boolean isFull(int row, int col) {
         row--;
         col--;
@@ -75,17 +97,18 @@ public class Percolation {
     }
 
     // does the system percolate?
+    // czy góra i doł mają łączność?
     public boolean percolates() {
         return (weightedQuickUnionUF.find(0) == weightedQuickUnionUF.find(size * size + 1));
     }
-
+    //sprawdzam czy pole istnieje
     private void gridPlace(int row, int col) {
         if (row > size || col > size || row < 0 || col <
                 0) {
             throw new IllegalArgumentException("place does not exists");
         }
     }
-
+    //sprawdzam czy nowo otwarte pole, a tym samym drzewo, można dołączyć do innego drzewa
     private void connectToNeighbors(int row, int col) {
 
         // lewy
@@ -108,7 +131,7 @@ public class Percolation {
 
         }
     }
-
+    //zwracam indeks w tablicy
     private int position(int row, int col) {
         return size * (row) + col + 1;
     }

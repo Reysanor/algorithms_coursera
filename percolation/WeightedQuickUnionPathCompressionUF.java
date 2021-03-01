@@ -14,6 +14,8 @@ public class WeightedQuickUnionPathCompressionUF {
     private int numberOfConnectedElements = 1; //liczba połączonych elementów
     //do Q2
     private int[] largest; //największy element w danym drzewie
+    //do Q3
+    private int[] succesors; //następcy dla każdego elementu
 
     //inicjalizacja
     public WeightedQuickUnionPathCompressionUF(int n) {
@@ -21,6 +23,7 @@ public class WeightedQuickUnionPathCompressionUF {
         parent = new int[n];
         size = new int[n];
         largest = new int[n];
+        succesors = new int[n];
         for (int i = 0; i < n; i++) {
             //domyślnie element jest korzeniem siebie
             parent[i] = i;
@@ -28,6 +31,8 @@ public class WeightedQuickUnionPathCompressionUF {
             size[i] = 1;
             //Q2, domyślna najwyższa wartość
             largest[i] = i;
+            //Q3, domyślny następca
+            succesors[i] = i;
         }
 
     }
@@ -85,16 +90,21 @@ public class WeightedQuickUnionPathCompressionUF {
 
     //to jest find(korzeń)
     private int root(int i) {
-        // jeżeli element szukany i jest różny od swojego korzenia
-        while (i != parent[i]) {
-            //kompresja ścieżek - ustawiam korzeń sprawdzanego elementu nie będącego szukaną wartością
-            //na jego korzeń dziadka
-            //(1.1 Union Find str 38)
-            parent[i] = parent[parent[i]];
-            //zwracam do szukania korzeń dziadka
-            i = parent[i];
+        if (tooBigValue(i)) {
+            // jeżeli element szukany i jest różny od swojego korzenia
+            while (i != parent[i]) {
+                //kompresja ścieżek - ustawiam korzeń sprawdzanego elementu nie będącego szukaną wartością
+                //na jego korzeń dziadka
+                //(1.1 Union Find str 38)
+                parent[i] = parent[parent[i]];
+                //zwracam do szukania korzeń dziadka
+                i = parent[i];
+            }
+            return i;
         }
-        return i;
+        else {
+            return i;
+        }
     }
 
     //pomocnicze metody
@@ -117,10 +127,72 @@ public class WeightedQuickUnionPathCompressionUF {
     }
 
     //do Q2
-    public int find(int n){
+    public int find(int n) {
         //największa wartość na korzenia wybranego elementu
         return largest[root(n)];
     }
+
+    //do Q3
+    public void remove(int n) {
+        if (!tooBigValue(n)) {
+
+            int i = root(n);
+            int j = root(n + 1);
+            if (!tooBigValue(j+1)) {
+
+                //wagi - porównuje się rozmiary drzew i podłącza mniejsze drzewo do większego
+                //co zmniejsza wysokość i przyspiesza wyszukiwanie
+                //takie same elementy - nic nie robie
+                if (i == j) return;
+                if (size[i] < size[j]) {
+                    parent[i] = j;
+                    size[j] += size[i];
+
+                }
+                else {
+                    parent[j] = i;
+                    size[i] += size[j];
+                    //remove to tak naprawde union(n,n+1)
+                    //jeżeli drzewo następcy jest mniejsze to normalnie następca stałby się liściem
+                    //aby tego uniknąć ustawiam jego poprzednika na wartość następcy
+                    //(działa tylko jak są co najmniej 2 elementy)
+
+                    //w ten sposób np. robiąc union(5,6) wykonuję jak w UF i następca to po prostu wartość +1
+
+                    //a potem union(6,7) przypisuje wyższą wartość,
+                    //czyli następce na pozycji [7] również jako następce na pozycji [6].
+                    //i teraz lista succesors przechowuje wartość (7) na pozycjach [5], [6] i oryginalne [7]
+                    //W ten sposób sprawdzając następce wartości (4)
+                    succesors[i] = succesors[j];
+                    //System.out.println(succesors[5] + " - " + succesors[6] + " - " + succesors[7]);
+                }
+                System.out.println("usuwany: " + n + ", " + "następca: " + succesors[i]);
+                System.out.print("lista: ");
+                for (int p = 0; p < count; p++) {
+                    System.out.print(succesors[p] + " | ");
+                }
+                System.out.println();
+                System.out.print("poprz: ");
+                for (int q = 0; q < count; q++) {
+                    System.out.print(q + " | ");
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    public int succesor(int n) {
+        //szukam korzeń następcy wyszukiwanego elementu i
+        // potem zwracam wartość następcy z tablicy "succesors"
+
+        return succesors[(root(n + 1))];
+    }
+
+    //zabezpieczenie przed zbyd dużymi wartościami
+    public boolean tooBigValue(int n) {
+        return n > count;
+    }
+
     public static void main(String[] args) {
 
 

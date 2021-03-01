@@ -3,8 +3,15 @@
  *  Coursera User ID:  123456
  *  Last modified:     1/1/2019
  **************************************************************************** */
-
+/* Successor with delete.
+ * Given a set of N integers S={0,1,...,N-1} and a sequence of requests of the following form:
+ *  - Remove x from S
+ *  - Find the successor of x: the smallest y in S such that y>=x.
+ * design a data type so that all operations (except construction) should take logarithmic time or better.
+ */
 public class Q3 {
+
+    /*
     private int[] numbers;
     private int[] succesor;
 
@@ -30,10 +37,17 @@ public class Q3 {
     public int getSuccesor(int value) {
         return succesor[value];
     }
-
+*/
     public static void main(String[] args) {
-        Q3 q3 = new Q3(10);
-        q3.delete(0);
+        WeightedQuickUnionPathCompressionUF uf = new WeightedQuickUnionPathCompressionUF(10);
+        uf.remove(0);
+        uf.remove(6);
+        uf.remove(2);
+        uf.remove(3);
+        uf.remove(9);
+        System.out.println(uf.succesor(3));
+
+
 
     }
 

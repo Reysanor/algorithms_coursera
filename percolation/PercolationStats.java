@@ -15,6 +15,7 @@ public class PercolationStats {
     private double[] results;
 
     // perform independent trials on an n-by-n grid
+    // wielkość pola oraz ilość prób
     public PercolationStats(int n, int trials) {
         this.size = n;
         this.trials = trials;
@@ -25,7 +26,7 @@ public class PercolationStats {
 
         randomizedPlace();
     }
-
+    // losowo otwieram pola
     private void randomizedPlace() {
         Percolation percolation;
         for (int i = 0; i < trials; i++) {
